@@ -1,5 +1,6 @@
 import pygame
 import classes.constants as const
+from classes.model import SpaceInvaders
 
 class Scene:
     """"""
@@ -60,6 +61,7 @@ class GameScene(Scene):
         """"""
 
         Scene.__init__(self, window)
+        self.__game = SpaceInvaders()
 # End of GameScene class
 
 class SettingsScene(Scene):
