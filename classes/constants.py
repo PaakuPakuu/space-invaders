@@ -9,3 +9,11 @@ QUIT = -1
 MAIN_MENU = 0
 GAME_MENU = 1
 OPTION_MENU = 2
+
+# Hord settings
+ROWS, COLUMNS = 5, 11
+
+# Aliens ID
+FIRST = 1
+SECOND = 2
+THIRD = 3

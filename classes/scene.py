@@ -1,5 +1,5 @@
 import pygame
-import constants as const
+import classes.constants as const
 
 class Scene:
     """"""

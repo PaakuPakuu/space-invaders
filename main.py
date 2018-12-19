@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import pygame
-import constants as const
-from scene import *
+import classes.constants as const
+from classes.scene import *
 
 def main():
     """"""
