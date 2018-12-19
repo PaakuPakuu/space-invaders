@@ -1,6 +1,6 @@
 import pygame
 import classes.constants as const
-from classes.model import SpaceInvaders
+from classes.hord import Hord
 
 class Scene:
     """"""
@@ -8,30 +8,16 @@ class Scene:
     def __init__(self, window):
         """"""
 
-        self.__window = window
-        self.__running = True
-        self.__menu_on_quit = const.GAME_MENU
-
-    def on_event(self, event):
-        """"""
-
-        if event.type == pygame.QUIT:
-            self.__running = False
-
-    def on_update(self):
-        """"""
-
-        pass
-
-    def on_render(self):
-        """"""
-
-        pass
+        self._window = window
+        self._running = True
+        self._menu_on_quit = const.QUIT
 
     def on_execute(self):
         """Retourne l'id du menu cible."""
 
-        while self.__running:
+        clock = pygame.time.Clock()
+
+        while self._running:
             # get events
             for e in pygame.event.get():
                 self.on_event(e)
@@ -40,9 +26,13 @@ class Scene:
             self.on_update()
 
             # display
+            self._window.fill((0,0,0))
             self.on_render()
+            pygame.display.flip()
 
-        return self.__menu_on_quit
+            clock.tick(60)
+
+        return self._menu_on_quit
 # End of Scene class
 
 class MenuScene(Scene):
@@ -61,7 +51,25 @@ class GameScene(Scene):
         """"""
 
         Scene.__init__(self, window)
-        self.__game = SpaceInvaders()
+
+        self._on_menu_quit = const.MAIN_MENU
+        self.__hord = Hord()
+        # self.__player = Player()
+
+    def on_event(self, event):
+        """"""
+        if event.type == pygame.QUIT:
+            self._running = False
+
+    def on_update(self):
+        """"""
+        self.__hord.on_update(pygame.time.get_ticks())
+
+    def on_render(self):
+        """"""
+        self.__hord.on_render(self._window)
+
+
 # End of GameScene class
 
 class SettingsScene(Scene):
