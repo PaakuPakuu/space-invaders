@@ -59,12 +59,7 @@ class Alien(MovingEntity):
     def change_dir(self, val):
         """"""
 
-        if val > 0:
-            self.__dir = 1
-        elif val < 0:
-            self.__dir = -1
-        else:
-            self.__dir = 0
+        self.__dir *= -1
 
     def update_sprite(self, time):
         """"""
@@ -78,6 +73,11 @@ class Alien(MovingEntity):
 
         self.lateral_movement(self.__dir)
         self.update_sprite(time)
+
+    def move_down(self):
+        """"""
+
+        self.pos.y += const.STEP_Y
 
 class Player(MovingEntity):
     """"""

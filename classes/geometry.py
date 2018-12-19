@@ -11,7 +11,7 @@ class Point:
         
         return (self.x, self.y)
 
-    def copy(self):
+    def clone(self):
         """"""
 
         return Point(self.x, self.y)

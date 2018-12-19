@@ -10,18 +10,16 @@ class Hord:
 
         self.__aliens = init_aliens(rows, cols)
         self.__pos = self.__aliens[0][0].pos
+    
+    def on_border_left(self):
+        """"""
 
-    def __str__(self):
-        """temp"""
+        return self.__pos.x < const.OFFSET_X
 
-        ch = ""
+    def on_border_right(self):
+        """"""
 
-        for r in self.__aliens:
-            for c in r:
-                ch += str(c.id) + " "
-            ch += "\n"
-
-        return ch
+        return self.__pos.x + const.TX > const.SWIDTH - const.OFFSET_X
 
     def on_update(self, time):
         """"""
@@ -29,6 +27,9 @@ class Hord:
         for row in self.__aliens:
             for alien in row:
                 alien.on_update(time)
+                if self.on_border_left() or self.on_border_right():
+                    alien.change_dir(1)
+                    alien.move_down()
 
     def on_render(self, surf):
         """"""
