@@ -1,6 +1,7 @@
 import pygame
 import classes.constants as const
 from classes.hord import Hord
+from classes.entities import Player
 
 class Scene:
     """"""
@@ -54,21 +55,24 @@ class GameScene(Scene):
 
         self._on_menu_quit = const.MAIN_MENU
         self.__hord = Hord()
-        # self.__player = Player()
+        self.__player = Player()
 
     def on_event(self, event):
         """"""
         if event.type == pygame.QUIT:
             self._running = False
+        else:
+            self.__player.on_event(event)
 
     def on_update(self):
         """"""
         self.__hord.on_update(pygame.time.get_ticks())
+        self.__player.on_update()
 
     def on_render(self):
         """"""
         self.__hord.on_render(self._window)
-
+        self.__player.on_render(self._window)
 
 # End of GameScene class
 

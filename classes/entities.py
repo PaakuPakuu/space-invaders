@@ -1,5 +1,7 @@
+import pygame
 from random import randint
 import classes.constants as const
+from classes.geometry import Point
 
 class Entity:
     """"""
@@ -82,4 +84,49 @@ class Alien(MovingEntity):
 class Player(MovingEntity):
     """"""
 
-    pass
+    def __init__(self):
+        """"""
+
+        pos = Point((const.SWIDTH - const.EWIDTH) // 2, const.SHEIGHT - const.EHEIGHT - const.OFFSET_Y)
+        MovingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED)
+        self.__currentSprite = 0
+
+        self.__velocity = 0
+
+    def move(self, event):
+        """"""
+
+        if event.key == pygame.K_LEFT:
+            self.__velocity -= 1
+        elif event.key == pygame.K_RIGHT:
+            self.__velocity += 1
+
+    def stop_moving(self, event):
+        """"""
+
+        if event.key == pygame.K_LEFT:
+            self.__velocity += 1
+        elif event.key == pygame.K_RIGHT:
+            self.__velocity -= 1
+
+    def replace(self):
+        """"""
+
+        if self.pos.x < const.BORDER_LEFT:
+            self.pos.x = const.BORDER_LEFT
+        elif self.pos.x > const.BORDER_RIGHT:
+            self.pos.x = const.BORDER_RIGHT
+
+    def on_event(self, event):
+        """"""
+
+        if event.type == pygame.KEYDOWN:
+            self.move(event)
+        elif event.type == pygame.KEYUP:
+            self.stop_moving(event)
+
+    def on_update(self):
+        """"""
+
+        self.lateral_movement(self.__velocity)
+        self.replace()

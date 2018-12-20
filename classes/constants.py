@@ -15,6 +15,7 @@ OPTION_MENU = 2
 
 # Entities settings
 EWIDTH, EHEIGHT = 12 * MULT, 8 * MULT
+BORDER_LEFT, BORDER_RIGHT = OFFSET_X, SWIDTH - OFFSET_X - EWIDTH
 
 # Hord settings
 ROWS, COLUMNS = 5, 11
@@ -30,6 +31,9 @@ SECOND = 2
 THIRD = 3
 
 ASPEED = 0.2 * MULT
+
+# Player settings
+PSPEED = 3 * MULT
 
 # Sprites name
 
@@ -49,7 +53,12 @@ def load_sprites():
 
         sprites[name] = images
 
-    sprites["player"] = [pygame.image.load(path + "player/" + n + ".png") for n in ["normal", "destroyed"]]
+    sprites["player"] = []
+    for n in ["normal", "destroyed"]:
+        image = pygame.image.load(path + "player/" + n + ".png")
+        image.set_colorkey((255,0,255))
+        image = pygame.transform.scale(image, (image.get_width() * MULT, image.get_height() * MULT))
+        sprites["player"].append(image)
 
     return sprites
 
