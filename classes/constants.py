@@ -31,9 +31,11 @@ SECOND = 2
 THIRD = 3
 
 ASPEED = 0.2 * MULT
+ALSPEED = 2 * MULT
 
 # Player settings
 PSPEED = 3 * MULT
+PLSPEED = 5 * MULT
 
 # Sprites name
 
@@ -42,23 +44,40 @@ def load_sprites():
     
     sprites = {}
     path = "./resources/images/"
+
+    def convert_image(path):
+        """"""
+
+        image = pygame.image.load(path)
+        image.set_colorkey((255,0,255))
+        image = pygame.transform.scale(image, (image.get_width() * MULT, image.get_height() * MULT))
+
+        return image
+
+    # aliens sprites
     for i in range(NB_ALIENS_TYPE):
         name = "alien" + str(i + 1)
         images = []
         for j in range(2):
-            image = pygame.image.load(path + "aliens/" + name + "/" + str(j) + ".png")
-            image.set_colorkey((255,0,255))
-            image = pygame.transform.scale(image, (image.get_width() * MULT, image.get_height() * MULT))
-            images.append(image)
-
+            images.append(convert_image(path + "aliens/" + name + "/" + str(j) + ".png"))
         sprites[name] = images
 
+    # aliens lasers sprites
+    sprites["aliens_lasers"] = {}
+    for i in range(2):
+        name = "laser" + str(i + 1)
+        lasers = []
+        for j in range(2):
+            lasers.append(convert_image(path + "aliens/lasers/" + name + "/laser_" + str(j + 1) + ".png"))
+        sprites["aliens_lasers"][name] = lasers
+
+    # player sprites
     sprites["player"] = []
     for n in ["normal", "destroyed"]:
-        image = pygame.image.load(path + "player/" + n + ".png")
-        image.set_colorkey((255,0,255))
-        image = pygame.transform.scale(image, (image.get_width() * MULT, image.get_height() * MULT))
-        sprites["player"].append(image)
+        sprites["player"].append(convert_image(path + "player/" + n + ".png"))
+
+    # player lasers sprites
+    sprites["player_lasers"] = [convert_image(path + "player/lasers/laser.png")]
 
     return sprites
 

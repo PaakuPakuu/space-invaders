@@ -1,7 +1,8 @@
 import pygame
 from random import randint
 import classes.constants as const
-from classes.geometry import Point
+from classes.geometry import *
+from classes.laser import LaserPlayer
 
 class Entity:
     """"""
@@ -12,6 +13,7 @@ class Entity:
         self.pos = pos
         self.__sprites = sprites
         self.__currentSprite = randint(0, len(self.__sprites) - 1)
+        self.__rect = Rectangle(pos, const.EWIDTH, const.EHEIGHT)
 
     def next_sprite(self):
         """"""
@@ -93,6 +95,8 @@ class Player(MovingEntity):
 
         self.__velocity = 0
 
+        self.laser = None
+
     def move(self, event):
         """"""
 
@@ -117,11 +121,19 @@ class Player(MovingEntity):
         elif self.pos.x > const.BORDER_RIGHT:
             self.pos.x = const.BORDER_RIGHT
 
+    def shoot(self):
+        """"""
+
+        self.laser = LaserPlayer(Point(self.pos.x + const.EWIDTH // 2, self.pos.y))
+
     def on_event(self, event):
         """"""
 
         if event.type == pygame.KEYDOWN:
             self.move(event)
+            
+            if self.laser == None and event.key == pygame.K_SPACE:
+                self.shoot()
         elif event.type == pygame.KEYUP:
             self.stop_moving(event)
 
@@ -130,3 +142,6 @@ class Player(MovingEntity):
 
         self.lateral_movement(self.__velocity)
         self.replace()
+
+        if self.laser != None and self.laser.has_touched:
+            self.laser = None
