@@ -8,8 +8,9 @@ class Hord:
     def __init__(self, rows=const.ROWS, cols=const.COLUMNS):
         """"""
 
-        self.__aliens = init_aliens(rows, cols)
-        self.__pos = self.__aliens[0][0].pos
+        self.aliens = init_aliens(rows, cols)
+        self.__pos = self.aliens[0][0].pos
+        self.__down = 0
     
     def on_border_left(self):
         """"""
@@ -21,22 +22,37 @@ class Hord:
 
         return self.__pos.x + const.TX > const.SWIDTH - const.OFFSET_X
 
+    def del_dead_aliens(self):
+        """"""
+
+        for row in self.aliens:
+            i = 0
+            while i < len(row):
+                if row[i].alive:
+                    i += 1
+                else:
+                    del(row[i])
+
     def on_update(self, time):
         """"""
 
-        for row in self.__aliens:
+        self.del_dead_aliens()
+
+        for row in self.aliens:
             for alien in row:
                 alien.on_update(time)
                 if self.on_border_left() or self.on_border_right():
                     alien.change_dir(1)
                     alien.move_down()
+                    self.__down += 1
 
     def on_render(self, surf):
         """"""
 
-        for row in self.__aliens:
+        for row in self.aliens:
             for alien in row:
-                alien.on_render(surf)
+                if alien != None:
+                    alien.on_render(surf)
 
 # End of SpaceInvaders class
 

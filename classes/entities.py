@@ -13,7 +13,7 @@ class Entity:
         self.pos = pos
         self.__sprites = sprites
         self.__currentSprite = randint(0, len(self.__sprites) - 1)
-        self.__rect = Rectangle(pos, const.EWIDTH, const.EHEIGHT)
+        self.rect = Rectangle(pos, const.EWIDTH, const.EHEIGHT)
 
     def next_sprite(self):
         """"""
@@ -31,28 +31,38 @@ class Entity:
 
         surf.blit(self.__sprites[self.__currentSprite], self.pos.tuple())
 
-class MovingEntity(Entity):
+class LivingEntity(Entity):
     """"""
 
-    def __init__(self, pos, sprites, speed):
+    def __init__(self, pos, sprites, speed, lifes):
         """"""
 
         Entity.__init__(self, pos, sprites)
         self.__speed = speed
+        self.lifes = lifes
+        self.alive = True
 
     def lateral_movement(self, direct):
         """"""
 
         self.pos.x += self.__speed * direct
 
-class Alien(MovingEntity):
+    def take_damage(self, val = 1):
+        """"""
+
+        self.lifes -= val
+        if self.lifes <= 0:
+            self.alive = False
+            self.lifes = 0
+
+class Alien(LivingEntity):
     """"""
 
     def __init__(self, pos, race):
         """"""
 
         self.id = race
-        MovingEntity.__init__(self, pos, const.SPRITES["alien" + str(race)], const.ASPEED)
+        LivingEntity.__init__(self, pos, const.SPRITES["alien" + str(race)], const.ASPEED, 1)
         self.__dir = 1
 
         self.value = race * 10
@@ -83,14 +93,14 @@ class Alien(MovingEntity):
 
         self.pos.y += const.STEP_Y
 
-class Player(MovingEntity):
+class Player(LivingEntity):
     """"""
 
     def __init__(self):
         """"""
 
         pos = Point((const.SWIDTH - const.EWIDTH) // 2, const.SHEIGHT - const.EHEIGHT - const.OFFSET_Y)
-        MovingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED)
+        LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 3)
         self.__currentSprite = 0
 
         self.__velocity = 0

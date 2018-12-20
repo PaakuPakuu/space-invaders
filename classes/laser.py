@@ -25,13 +25,24 @@ class LaserPlayer(Laser):
 
         Laser.__init__(self, const.SPRITES["player_lasers"], pos)
 
-    def on_update(self):
+    def on_update(self, aliens):
         """"""
 
         self.pos.y -= const.PLSPEED
         
-        if self.pos.y < const.OFFSET_Y:
+        if self.pos.y < const.OFFSET_Y or self.collision(aliens):
             self.has_touched = True
+
+    def collision(self, aliens):
+        """"""
+
+        for row in aliens:
+            for a in row:
+                if a.rect.contains(self.pos):
+                    a.take_damage()
+                    return True
+
+        return False
 
 class LaserAlien(Laser):
     """"""
@@ -41,10 +52,18 @@ class LaserAlien(Laser):
 
         Laser.__init__(self, SPRITES["aliens_lasers"][str(randint(1,2))], pos)
 
-    def on_update(self):
+    def on_update(self, player):
         """"""
 
         self.pos.y += ALSPEED
 
         if self.pos.y > const.SHEIGHT:
             self.has_touched = True
+
+    def collisions(self, player):
+        """"""
+
+        if player.rect.contains(self.pos):
+            player.take_damage()
+            return True
+        return False
