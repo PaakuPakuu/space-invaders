@@ -2,7 +2,7 @@ import pygame
 from random import randint
 import classes.constants as const
 from classes.geometry import *
-from classes.laser import LaserPlayer
+from classes.laser import *
 
 class Entity:
     """"""
@@ -13,7 +13,9 @@ class Entity:
         self.pos = pos
         self.__sprites = sprites
         self.__currentSprite = randint(0, len(self.__sprites) - 1)
-        self.rect = Rectangle(pos, const.EWIDTH, const.EHEIGHT)
+
+        width, height = sprites[self.__currentSprite].get_width(), const.EHEIGHT - 2 * const.MULT
+        self.rect = Rectangle(pos, width, height)
 
     def next_sprite(self):
         """"""
@@ -58,19 +60,25 @@ class LivingEntity(Entity):
 class Alien(LivingEntity):
     """"""
 
-    def __init__(self, pos, race):
+    def __init__(self, pos, place, race):
         """"""
 
         self.id = race
         LivingEntity.__init__(self, pos, const.SPRITES["alien" + str(race)], const.ASPEED, 1)
+        
+        self.place = place
+
         self.__dir = 1
 
         self.value = race * 10
 
         self.__sprite_rate = randint(500, 1000)
         self.__next_sprite = 0
+
+        self.__next_fire = 0
+        self.__can_shoot = False
     
-    def change_dir(self, val):
+    def change_dir(self):
         """"""
 
         self.__dir *= -1
@@ -82,16 +90,26 @@ class Alien(LivingEntity):
             self.next_sprite()
             self.__next_sprite = time + self.__sprite_rate
 
-    def on_update(self, time):
+    def move_down(self):
+        """"""
+
+        self.pos.y += const.STEP_Y
+
+    def shoot(self):
+        """"""
+
+        pos = Point(self.pos.x - self.rect.tx() // 2, self.pos.y + self.rect.ty())
+        return LaserAlien(pos)
+
+    def on_update(self, time, lasers):
         """"""
 
         self.lateral_movement(self.__dir)
         self.update_sprite(time)
 
-    def move_down(self):
-        """"""
-
-        self.pos.y += const.STEP_Y
+        if self.__can_shoot and time >= self.__next_fire:
+            lasers.append(self.shoot())
+            self.__next_fire = time + randint(20, 40) * 100
 
 class Player(LivingEntity):
     """"""
@@ -134,7 +152,8 @@ class Player(LivingEntity):
     def shoot(self):
         """"""
 
-        self.laser = LaserPlayer(Point(self.pos.x + const.EWIDTH // 2, self.pos.y))
+        pos = Point(self.pos.x + const.EWIDTH // 2, self.pos.y)
+        self.laser = LaserPlayer(pos)
 
     def on_event(self, event):
         """"""

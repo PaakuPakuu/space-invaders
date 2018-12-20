@@ -54,8 +54,8 @@ class GameScene(Scene):
         Scene.__init__(self, window)
 
         self._on_menu_quit = const.MAIN_MENU
-        self.__hord = Hord()
         self.__player = Player()
+        self.__hord = Hord(self.__player)
 
     def on_event(self, event):
         """"""

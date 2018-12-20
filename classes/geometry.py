@@ -32,3 +32,13 @@ class Rectangle:
         in_x = point.x >= self._pos.x and point.x <= self._pos.x + self._tx
         in_y = point.y >= self._pos.y and point.y <= self._pos.y + self._ty
         return in_x and in_y
+    
+    def tx(self):
+        """"""
+
+        return self._tx
+
+    def ty(self):
+        """"""
+
+        return self._ty
