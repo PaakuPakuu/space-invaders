@@ -19,7 +19,7 @@ class Hord:
         self.__rows = rows
         self.__cols = self.__max_col - self.__min_col
 
-        self.__lasers = []
+        self.lasers = []
         self.__player = player
     
     def on_border_left(self):
@@ -87,16 +87,15 @@ class Hord:
         self.aliens[ind_max].can_shoot = True
         self.aliens[ind_max].next_fire = time + randint(10, 100) * 100
 
-    def on_update(self, time):
+    def update_aliens(self, time):
         """"""
 
-        # update aliens
         i = 0
         while i < self.nb_aliens:
             alien = self.aliens[i]
 
             if alien.alive:
-                alien.on_update(time, self.__lasers)
+                alien.on_update(time, self.lasers)
 
                 if self.on_border_left() or self.on_border_right():
                     alien.change_dir()
@@ -114,15 +113,23 @@ class Hord:
                 self.reset_rows()
                 self.reset_pos()
 
-        # update lasers
+    def update_lasers(self, time):
+        """"""
+
         i = 0
-        while i < len(self.__lasers):
-            laser = self.__lasers[i]
+        while i < len(self.lasers):
+            laser = self.lasers[i]
             if laser.has_touched:
-                del(self.__lasers[i])
+                del(self.lasers[i])
             else:
                 laser.on_update(self.__player, time)
                 i += 1
+
+    def on_update(self, time):
+        """"""
+
+        self.update_aliens(time)
+        self.update_lasers(time)
 
     def on_render(self, surf):
         """"""
@@ -132,7 +139,7 @@ class Hord:
             alien.on_render(surf)
 
         # display lasers
-        for laser in self.__lasers:
+        for laser in self.lasers:
             laser.on_render(surf)
 
 # End of SpaceInvaders class

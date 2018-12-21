@@ -22,16 +22,9 @@ class Rectangle:
     def __init__(self, pos, tx, ty):
         """"""
 
-        self._pos = pos
+        self.pos = pos
         self._tx = tx
         self._ty = ty
-
-    def contains(self, point):
-        """"""
-
-        in_x = point.x >= self._pos.x and point.x <= self._pos.x + self._tx
-        in_y = point.y >= self._pos.y and point.y <= self._pos.y + self._ty
-        return in_x and in_y
     
     def tx(self):
         """"""
@@ -42,3 +35,17 @@ class Rectangle:
         """"""
 
         return self._ty
+
+    def contains(self, point):
+        """"""
+
+        in_x = point.x >= self.pos.x and point.x <= self.pos.x + self._tx
+        in_y = point.y >= self.pos.y and point.y <= self.pos.y + self._ty
+        return in_x and in_y
+
+    def intersects(self, rect):
+        """"""
+
+        a = self.contains(rect.pos) or self.contains(Point(rect.pos.x + rect.tx(), rect.pos.y))
+        b = self.contains(Point(rect.pos.x, rect.pos.y + rect.ty())) or self.contains(Point(rect.pos.x + rect.tx(), rect.pos.y + rect.ty()))
+        return a or b

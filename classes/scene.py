@@ -69,7 +69,7 @@ class GameScene(Scene):
         self.__hord.on_update(pygame.time.get_ticks())
 
         if self.__player.laser != None:
-            self.__player.laser.on_update(self.__hord.aliens)
+            self.__player.laser.on_update(self.__hord)
 
         self.__player.on_update()
 

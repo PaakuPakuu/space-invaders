@@ -1,6 +1,6 @@
 import classes.constants as const
 from random import randint
-from classes.geometry import Point
+from classes.geometry import *
 
 class Laser:
     """"""
@@ -41,12 +41,17 @@ class LaserPlayer(Laser):
         if self.pos.y < const.OFFSET_Y or self.collision(aliens):
             self.has_touched = True
 
-    def collision(self, aliens):
+    def collision(self, hord):
         """"""
 
-        for a in aliens:
+        for a in hord.aliens:
             if a.rect.contains(self.pos):
                 a.take_damage()
+                return True
+
+        for l in hord.lasers:
+            if l.rect.contains(self.pos):
+                l.has_touched = True
                 return True
         return False
 
@@ -57,6 +62,8 @@ class LaserAlien(Laser):
         """"""
 
         Laser.__init__(self, const.SPRITES["aliens_lasers"]["laser" + str(randint(1,2))], pos)
+
+        self.rect = Rectangle(self.pos, 3 * const.MULT, 7 * const.MULT)
 
         self.__sprite_rate = 100
         self.__next_sprite = 0
@@ -76,7 +83,7 @@ class LaserAlien(Laser):
         """"""
 
         pos = Point(self.pos.x + const.MULT, self.pos.y + 5 * const.MULT)
-        if player.rect.contains(self.pos) or player.rect.contains(pos):
+        if player.rect.intersects(self.rect):
             player.take_damage()
             return True
         return False
