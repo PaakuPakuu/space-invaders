@@ -3,6 +3,7 @@ from random import randint
 import classes.constants as const
 from classes.geometry import *
 from classes.laser import *
+from classes.explosion import *
 
 class Entity:
     """"""
@@ -102,7 +103,7 @@ class Alien(LivingEntity):
         pos = Point(self.pos.x + self.rect.tx() // 2, self.pos.y + self.rect.ty())
         return LaserAlien(pos)
 
-    def on_update(self, time, lasers):
+    def on_update(self, time, lasers, explosions):
         """"""
 
         self.lateral_movement(self.__dir)
@@ -130,6 +131,7 @@ class Player(LivingEntity):
         self.__velocity = 0
 
         self.laser = None
+        self.explosion = None
 
     def move(self, event):
         """"""
@@ -172,11 +174,17 @@ class Player(LivingEntity):
         elif event.type == pygame.KEYUP:
             self.stop_moving(event)
 
-    def on_update(self):
+    def on_update(self, time):
         """"""
 
         self.lateral_movement(self.__velocity)
         self.replace()
 
-        if self.laser != None and self.laser.has_touched:
+        if self.laser != None and self.laser.has_touched != NOBODY:
+            self.explosion = Explosion(self.laser.pos, self.laser.has_touched, time)
+
             self.laser = None
+
+        if self.explosion != None and self.explosion.destroy:
+            self.explosion = None
+

@@ -1,6 +1,7 @@
 import classes.constants as const
 from random import randint
 from classes.geometry import *
+from classes.explosion import *
 
 class Laser:
     """"""
@@ -11,7 +12,7 @@ class Laser:
         self.pos = pos
         self._sprites = sprites
         self._currSprite = randint(0, len(sprites) - 1)
-        self.has_touched = False
+        self.has_touched = NOBODY
 
     def next_sprite(self):
         """"""
@@ -33,13 +34,15 @@ class LaserPlayer(Laser):
 
         Laser.__init__(self, const.SPRITES["player_lasers"], pos)
 
-    def on_update(self, aliens):
+    def on_update(self, hord):
         """"""
 
         self.pos.y -= const.PLSPEED
         
-        if self.pos.y < const.OFFSET_Y or self.collision(aliens):
-            self.has_touched = True
+        if self.pos.y < const.OFFSET_Y:
+            self.has_touched = LASER
+        else:
+            self.has_touched = self.collision(hord)
 
     def collision(self, hord):
         """"""
@@ -47,13 +50,13 @@ class LaserPlayer(Laser):
         for a in hord.aliens:
             if a.rect.contains(self.pos):
                 a.take_damage()
-                return True
+                return ALIEN
 
         for l in hord.lasers:
             if l.rect.contains(self.pos):
-                l.has_touched = True
-                return True
-        return False
+                l.has_touched = LASER
+                return LASER
+        return NOBODY
 
 class LaserAlien(Laser):
     """"""
@@ -73,9 +76,12 @@ class LaserAlien(Laser):
 
         self.pos.y += const.ALSPEED
 
-        if self.pos.y > const.SHEIGHT or self.collisions(player):
-            self.has_touched = True
-        elif time >= self.__next_sprite:
+        if self.pos.y > const.SHEIGHT - const.OFFSET_Y:
+            self.has_touched = LASER
+        else:
+            self.has_touched = self.collisions(player)
+
+        if time >= self.__next_sprite:
             self.next_sprite()
             self.__next_sprite = time + self.__sprite_rate
 
@@ -85,5 +91,5 @@ class LaserAlien(Laser):
         pos = Point(self.pos.x + const.MULT, self.pos.y + 5 * const.MULT)
         if player.rect.intersects(self.rect):
             player.take_damage()
-            return True
-        return False
+            return PLAYER
+        return NOBODY

@@ -79,6 +79,9 @@ def load_sprites():
     # player lasers sprites
     sprites["player_lasers"] = [convert_image(path + "player/lasers/laser.png")]
 
+    # explosions sprites
+    sprites["explosion"] = [convert_image(path + "explosion/" + str(name) + ".png") for name in range(3)]
+
     return sprites
 
 SPRITES = load_sprites()

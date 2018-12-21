@@ -2,6 +2,7 @@ import classes.constants as const
 from classes.entities import Alien
 from classes.geometry import Point
 from random import randint
+from classes.explosion import *
 
 class Hord:
     """"""
@@ -20,6 +21,8 @@ class Hord:
         self.__cols = self.__max_col - self.__min_col
 
         self.lasers = []
+        self.explosions = []
+
         self.__player = player
     
     def on_border_left(self):
@@ -95,7 +98,7 @@ class Hord:
             alien = self.aliens[i]
 
             if alien.alive:
-                alien.on_update(time, self.lasers)
+                alien.on_update(time, self.lasers, self.explosions)
 
                 if self.on_border_left() or self.on_border_right():
                     alien.change_dir()
@@ -119,10 +122,23 @@ class Hord:
         i = 0
         while i < len(self.lasers):
             laser = self.lasers[i]
-            if laser.has_touched:
+            if laser.has_touched != NOBODY:
+                self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
                 del(self.lasers[i])
             else:
                 laser.on_update(self.__player, time)
+                i += 1
+
+    def update_explosions(self, time):
+        """"""
+
+        i = 0
+        while i < len(self.explosions):
+            e = self.explosions[i]
+            if e.destroy:
+                del(self.explosions[i])
+            else:
+                e.on_update(time)
                 i += 1
 
     def on_update(self, time):
@@ -130,6 +146,7 @@ class Hord:
 
         self.update_aliens(time)
         self.update_lasers(time)
+        self.update_explosions(time)
 
     def on_render(self, surf):
         """"""
@@ -141,6 +158,10 @@ class Hord:
         # display lasers
         for laser in self.lasers:
             laser.on_render(surf)
+
+        # display explosions
+        for explo in self.explosions:
+            explo.on_render(surf)
 
 # End of SpaceInvaders class
 

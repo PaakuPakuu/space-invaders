@@ -66,12 +66,17 @@ class GameScene(Scene):
 
     def on_update(self):
         """"""
-        self.__hord.on_update(pygame.time.get_ticks())
+        
+        time = pygame.time.get_ticks()
+
+        self.__hord.on_update(time)
 
         if self.__player.laser != None:
             self.__player.laser.on_update(self.__hord)
+        if self.__player.explosion != None:
+            self.__player.explosion.on_update(time)
 
-        self.__player.on_update()
+        self.__player.on_update(time)
 
     def on_render(self):
         """"""
@@ -81,6 +86,8 @@ class GameScene(Scene):
 
         if self.__player.laser != None:
             self.__player.laser.on_render(window)
+        if self.__player.explosion != None:
+            self.__player.explosion.on_render(window)
 
         self.__player.on_render(window)
 
