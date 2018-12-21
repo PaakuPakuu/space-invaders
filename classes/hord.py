@@ -73,11 +73,15 @@ class Hord:
     def allow_shoot(self, x, time):
         """"""
 
-        ind_max = i = 0
+        ind_max = -1
+        i = 0
         while i < self.nb_aliens:
             a = self.aliens[i]
-            if a.place.x == x and a.place.y > self.aliens[ind_max].place.y:
-                ind_max = i
+            if a.place.x == x:
+                if ind_max == -1:
+                    ind_max = i
+                elif a.place.y > self.aliens[ind_max].place.y:
+                    ind_max = i
             i += 1
 
         self.aliens[ind_max].can_shoot = True
@@ -145,9 +149,9 @@ def init_aliens(r, c):
             y = const.OFFSET_Y + const.SPACE_BONUS + i * const.SPACE_Y
             pos = Point(x, y)
             race = 0
-            if i < 2:
+            if i < 1:
                 race = const.THIRD
-            elif 2 <= i <= 3:
+            elif 1 <= i <= 2:
                 race = const.SECOND
             else:
                 race = const.FIRST
