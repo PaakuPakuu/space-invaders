@@ -76,7 +76,7 @@ class LaserAlien(Laser):
 
         self.pos.y += const.ALSPEED
 
-        if self.pos.y > const.SHEIGHT - const.OFFSET_Y:
+        if self.pos.y >= const.BEGIN_LINE[1] - 5 * const.MULT:
             self.has_touched = LASER
         else:
             self.has_touched = self.collisions(player)
