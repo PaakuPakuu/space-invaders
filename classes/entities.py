@@ -174,7 +174,7 @@ class Player(LivingEntity):
         elif event.type == pygame.KEYUP:
             self.stop_moving(event)
 
-    def on_update(self, time):
+    def on_update(self, time, gui):
         """"""
 
         self.lateral_movement(self.__velocity)
@@ -188,3 +188,4 @@ class Player(LivingEntity):
         if self.explosion != None and self.explosion.destroy:
             self.explosion = None
 
+        gui.lifes = self.lifes

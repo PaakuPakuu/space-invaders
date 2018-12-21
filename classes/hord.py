@@ -90,7 +90,7 @@ class Hord:
         self.aliens[ind_max].can_shoot = True
         self.aliens[ind_max].next_fire = time + randint(10, 100) * 100
 
-    def update_aliens(self, time):
+    def update_aliens(self, time, gui):
         """"""
 
         i = 0
@@ -107,6 +107,8 @@ class Hord:
 
                 i += 1
             else:
+                gui.score += alien.value
+
                 x = alien.place.x
                 del(self.aliens[i])
                 self.nb_aliens -= 1
@@ -123,8 +125,8 @@ class Hord:
         while i < len(self.lasers):
             laser = self.lasers[i]
             if laser.has_touched != NOBODY:
-                if laser.has_touched != LASER:
-                    self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
+                # if laser.has_touched != LASER:
+                self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
                 del(self.lasers[i])
             else:
                 laser.on_update(self.__player, time)
@@ -142,10 +144,10 @@ class Hord:
                 e.on_update(time)
                 i += 1
 
-    def on_update(self, time):
+    def on_update(self, time, gui):
         """"""
 
-        self.update_aliens(time)
+        self.update_aliens(time, gui)
         self.update_lasers(time)
         self.update_explosions(time)
 

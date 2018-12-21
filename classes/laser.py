@@ -66,7 +66,7 @@ class LaserAlien(Laser):
 
         Laser.__init__(self, const.SPRITES["aliens_lasers"]["laser" + str(randint(1,2))], pos)
 
-        self.rect = Rectangle(self.pos, 3 * const.MULT, 7 * const.MULT)
+        self.rect = Rectangle(self.pos, 3 * const.MULT, 4 * const.MULT)
 
         self.__sprite_rate = 100
         self.__next_sprite = 0
@@ -88,7 +88,6 @@ class LaserAlien(Laser):
     def collisions(self, player):
         """"""
 
-        pos = Point(self.pos.x + const.MULT, self.pos.y + 5 * const.MULT)
         if player.rect.intersects(self.rect):
             player.take_damage()
             return PLAYER
