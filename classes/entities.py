@@ -60,7 +60,7 @@ class LivingEntity(Entity):
 class Alien(LivingEntity):
     """"""
 
-    def __init__(self, pos, place, race):
+    def __init__(self, pos, place, race, is_lower):
         """"""
 
         self.id = race
@@ -75,8 +75,9 @@ class Alien(LivingEntity):
         self.__sprite_rate = randint(500, 1000)
         self.__next_sprite = 0
 
-        self.__next_fire = 0
-        self.__can_shoot = False
+        self.next_fire = 0
+        self.__is_lower = is_lower
+        self.can_shoot = False
     
     def change_dir(self):
         """"""
@@ -98,7 +99,7 @@ class Alien(LivingEntity):
     def shoot(self):
         """"""
 
-        pos = Point(self.pos.x - self.rect.tx() // 2, self.pos.y + self.rect.ty())
+        pos = Point(self.pos.x + self.rect.tx() // 2, self.pos.y + self.rect.ty())
         return LaserAlien(pos)
 
     def on_update(self, time, lasers):
@@ -107,9 +108,14 @@ class Alien(LivingEntity):
         self.lateral_movement(self.__dir)
         self.update_sprite(time)
 
-        if self.__can_shoot and time >= self.__next_fire:
-            lasers.append(self.shoot())
-            self.__next_fire = time + randint(20, 40) * 100
+        if time >= self.next_fire:
+            fire_rate = randint(10, 100) * 100
+            if self.can_shoot:
+                lasers.append(self.shoot())
+                self.next_fire += fire_rate
+            elif self.__is_lower:
+                self.can_shoot = True
+                self.next_fire = time + fire_rate
 
 class Player(LivingEntity):
     """"""

@@ -1,5 +1,6 @@
 import classes.constants as const
 from random import randint
+from classes.geometry import Point
 
 class Laser:
     """"""
@@ -11,6 +12,13 @@ class Laser:
         self._sprites = sprites
         self._currSprite = randint(0, len(sprites) - 1)
         self.has_touched = False
+
+    def next_sprite(self):
+        """"""
+
+        self._currSprite += 1
+        if self._currSprite == len(self._sprites):
+            self._currSprite = 0
 
     def on_render(self, surf):
         """"""
@@ -50,18 +58,25 @@ class LaserAlien(Laser):
 
         Laser.__init__(self, const.SPRITES["aliens_lasers"]["laser" + str(randint(1,2))], pos)
 
-    def on_update(self, player):
+        self.__sprite_rate = 100
+        self.__next_sprite = 0
+
+    def on_update(self, player, time):
         """"""
 
         self.pos.y += const.ALSPEED
 
-        if self.pos.y > const.SHEIGHT:
+        if self.pos.y > const.SHEIGHT or self.collisions(player):
             self.has_touched = True
+        elif time >= self.__next_sprite:
+            self.next_sprite()
+            self.__next_sprite = time + self.__sprite_rate
 
     def collisions(self, player):
         """"""
 
-        if player.rect.contains(self.pos):
+        pos = Point(self.pos.x + const.MULT, self.pos.y + 5 * const.MULT)
+        if player.rect.contains(self.pos) or player.rect.contains(pos):
             player.take_damage()
             return True
         return False

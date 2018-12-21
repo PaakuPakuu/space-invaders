@@ -30,12 +30,12 @@ FIRST = 1
 SECOND = 2
 THIRD = 3
 
-ASPEED = 0.2 * MULT
+ASPEED = 0.1 * MULT
 ALSPEED = 2 * MULT
 
 # Player settings
-PSPEED = 3 * MULT
-PLSPEED = 7 * MULT
+PSPEED = 2 * MULT
+PLSPEED = 6 * MULT
 
 # Sprites name
 
@@ -67,7 +67,7 @@ def load_sprites():
     for i in range(2):
         name = "laser" + str(i + 1)
         lasers = []
-        for j in range(2):
+        for j in range(3):
             lasers.append(convert_image(path + "aliens/lasers/" + name + "/laser_" + str(j + 1) + ".png"))
         sprites["aliens_lasers"][name] = lasers
 

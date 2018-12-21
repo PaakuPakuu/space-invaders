@@ -31,7 +31,7 @@ class Scene:
             self.on_render()
             pygame.display.flip()
 
-            clock.tick(30)
+            clock.tick(50)
 
         return self._menu_on_quit
 # End of Scene class

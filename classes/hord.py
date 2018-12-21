@@ -1,6 +1,7 @@
 import classes.constants as const
 from classes.entities import Alien
 from classes.geometry import Point
+from random import randint
 
 class Hord:
     """"""
@@ -62,12 +63,25 @@ class Hord:
 
         i = 0
         trouve = False
-        while not trouve and i < len(self.aliens):
+        while not trouve and i < self.nb_aliens:
             a = self.aliens[i]
             if a.place.x == self.__min_col:
                 self.__pos = a.pos
                 trouve = True
             i += 1
+
+    def allow_shoot(self, x, time):
+        """"""
+
+        ind_max = i = 0
+        while i < self.nb_aliens:
+            a = self.aliens[i]
+            if a.place.x == x and a.place.y > self.aliens[ind_max].place.y:
+                ind_max = i
+            i += 1
+
+        self.aliens[ind_max].can_shoot = True
+        self.aliens[ind_max].next_fire = time + randint(10, 100) * 100
 
     def on_update(self, time):
         """"""
@@ -87,8 +101,10 @@ class Hord:
 
                 i += 1
             else:
+                x = alien.place.x
                 del(self.aliens[i])
                 self.nb_aliens -= 1
+                self.allow_shoot(x, time)
                 
                 self.reset_cols()
                 self.reset_rows()
@@ -101,7 +117,7 @@ class Hord:
             if laser.has_touched:
                 del(self.__lasers[i])
             else:
-                laser.on_update(self.__player)
+                laser.on_update(self.__player, time)
                 i += 1
 
     def on_render(self, surf):
@@ -121,10 +137,6 @@ def init_aliens(r, c):
     """"""
 
     # A revoir pour généraliser
-    # pistes
-    # → si r impair, terminer par 1 THIRD
-    # → si r pair, terminer par 1 SECOND puis 1 THIRD
-
     aliens = []
 
     for i in range(r):
@@ -140,6 +152,6 @@ def init_aliens(r, c):
             else:
                 race = const.FIRST
 
-            aliens.append(Alien(pos, Point(j, i), race))
+            aliens.append(Alien(pos, Point(j, i), race, i == r - 1))
 
     return aliens
