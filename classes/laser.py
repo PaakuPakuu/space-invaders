@@ -48,7 +48,7 @@ class LaserPlayer(Laser):
         """"""
 
         for a in hord.aliens:
-            if a.rect.contains(self.pos):
+            if a.rect.contains(self.pos) or a.rect.contains(Point(self.pos.x + const.MULT, self.pos.y)):
                 a.take_damage()
                 return ALIEN
 

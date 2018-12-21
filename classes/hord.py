@@ -123,7 +123,8 @@ class Hord:
         while i < len(self.lasers):
             laser = self.lasers[i]
             if laser.has_touched != NOBODY:
-                self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
+                if laser.has_touched != LASER:
+                    self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
                 del(self.lasers[i])
             else:
                 laser.on_update(self.__player, time)
