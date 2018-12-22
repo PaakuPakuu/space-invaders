@@ -122,6 +122,8 @@ class GameScene(Scene):
         self.__pause_time = 0
         self.__won = False
 
+        self.__dead = False
+
         # texts
         self.__t_pause = self._gui.font.render("PAUSE", False, const.COLOR)
         self.__t_resume = self._gui.font.render("[ESC] : RESUME", False, const.COLOR)
@@ -149,7 +151,7 @@ class GameScene(Scene):
 
         self._gui.on_update()
 
-        self.__hord.on_update(time, self._gui)
+        self.__hord.on_update(time, self._gui, self.__player.dead)
 
         if self.__player.laser != None:
             self.__player.laser.on_update(self.__hord)
@@ -158,7 +160,7 @@ class GameScene(Scene):
 
         self.__player.on_update(time, self._gui)
 
-        if not self.__player.alive or self.__hord.nb_aliens == 0:
+        if (not self.__player.alive or self.__hord.nb_aliens == 0) and not self.__player.dead:
             self._running = False
             if self.__player.alive:
                 self.__won = True

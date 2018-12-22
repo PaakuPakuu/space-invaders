@@ -57,7 +57,7 @@ class GUI:
         if self.lifes > 0:
             surf.blit(self.__t_lifes, const.TEXT_LIFE_POS)
 
-        for i in range(self.lifes):
+        for i in range(self.lifes - 1):
             x, y = const.LIFE_POS
             surf.blit(self.__life_sprite, (x + i * const.LIFE_SPACE, y))
         

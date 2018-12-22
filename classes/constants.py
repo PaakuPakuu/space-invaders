@@ -72,7 +72,7 @@ def load_sprites():
 
     # player sprites
     sprites["player"] = []
-    for n in ["normal", "destroyed"]:
+    for n in ["normal", "destroyed1", "destroyed2"]:
         sprites["player"].append(convert_image(path + "player/" + n + ".png"))
 
     # player lasers sprites

@@ -145,10 +145,12 @@ class Hord:
                 e.on_update(time)
                 i += 1
 
-    def on_update(self, time, gui):
+    def on_update(self, time, gui, dead):
         """"""
 
-        self.update_aliens(time, gui)
+        if not dead:
+            self.update_aliens(time, gui)
+
         self.update_lasers(time)
         self.update_explosions(time)
 

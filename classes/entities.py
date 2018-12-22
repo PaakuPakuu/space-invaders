@@ -13,17 +13,22 @@ class Entity:
 
         self.pos = pos
         self.__sprites = sprites
-        self.__currentSprite = randint(0, len(self.__sprites) - 1)
+        self.__currentSprite = 0
 
         width, height = sprites[self.__currentSprite].get_width(), const.EHEIGHT - 2 * const.MULT
         self.rect = Rectangle(pos, width, height)
 
-    def next_sprite(self):
+    def init_sprite(self):
+        """"""
+
+        self.__currentSprite = 0
+
+    def next_sprite(self, first = 0):
         """"""
 
         self.__currentSprite += 1
         if self.__currentSprite >= len(self.__sprites):
-            self.__currentSprite = 0
+            self.__currentSprite = first
 
     def on_update(self):
         """"""
@@ -128,26 +133,31 @@ class Player(LivingEntity):
         LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 3)
         self.__currentSprite = 0
 
-        self.__velocity = 0
+        self.__left_velocity = 0
+        self.__right_velocity = 0
 
         self.laser = None
         self.explosion = None
+        self.dead = False
+        self.dead_time = 0
+        self.__sprite_rate = 80
+        self.__next_sprite = 0
 
     def move(self, event):
         """"""
 
         if event.key == pygame.K_LEFT:
-            self.__velocity -= 1
+            self.__left_velocity = 1
         elif event.key == pygame.K_RIGHT:
-            self.__velocity += 1
+            self.__right_velocity = 1
 
     def stop_moving(self, event):
         """"""
 
         if event.key == pygame.K_LEFT:
-            self.__velocity += 1
+            self.__left_velocity = 0
         elif event.key == pygame.K_RIGHT:
-            self.__velocity -= 1
+            self.__right_velocity = 0
 
     def replace(self):
         """"""
@@ -166,26 +176,41 @@ class Player(LivingEntity):
     def on_event(self, event):
         """"""
 
-        if event.type == pygame.KEYDOWN:
-            self.move(event)
-            
-            if self.laser == None and event.key == pygame.K_SPACE:
-                self.shoot()
-        elif event.type == pygame.KEYUP:
-            self.stop_moving(event)
+        if not self.dead:
+            if event.type == pygame.KEYDOWN:
+                self.move(event)
+                
+                if self.laser == None and event.key == pygame.K_SPACE:
+                    self.shoot()
+            elif event.type == pygame.KEYUP:
+                self.stop_moving(event)
+
+    def dead_animation(self, time):
+        """"""
+
+        if time >= self.__next_sprite:
+            self.next_sprite(1)
+            self.__next_sprite = time + self.__sprite_rate
+
+        if time >= self.dead_time:
+            self.dead = False
+            self.init_sprite()
 
     def on_update(self, time, gui):
         """"""
 
-        self.lateral_movement(self.__velocity)
-        self.replace()
+        if not self.dead:
+            self.lateral_movement(self.__right_velocity - self.__left_velocity)
+            self.replace()
 
-        if self.laser != None and self.laser.has_touched != NOBODY:
-            self.explosion = Explosion(self.laser.pos, self.laser.has_touched, time)
+            if self.laser != None and self.laser.has_touched != NOBODY:
+                self.explosion = Explosion(self.laser.pos, self.laser.has_touched, time)
+                self.laser = None
 
-            self.laser = None
+            if self.explosion != None and self.explosion.destroy:
+                self.explosion = None
 
-        if self.explosion != None and self.explosion.destroy:
-            self.explosion = None
-
-        gui.lifes = self.lifes
+            gui.lifes = self.lifes
+        else:
+            self.dead_animation(time)
+            self.__left_velocity = self.__right_velocity = 0

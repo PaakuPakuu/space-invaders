@@ -79,16 +79,18 @@ class LaserAlien(Laser):
         if self.pos.y >= const.BEGIN_LINE[1] - 5 * const.MULT:
             self.has_touched = LASER
         else:
-            self.has_touched = self.collisions(player)
+            self.has_touched = self.collisions(player, time)
 
         if time >= self.__next_sprite:
             self.next_sprite()
             self.__next_sprite = time + self.__sprite_rate
 
-    def collisions(self, player):
+    def collisions(self, player, time):
         """"""
 
-        if player.rect.intersects(self.rect):
+        if not player.dead and player.rect.intersects(self.rect):
             player.take_damage()
+            player.dead = True
+            player.dead_time = time + 1500
             return PLAYER
         return NOBODY
