@@ -27,7 +27,7 @@ def main():
             stop = True
 
     pygame.quit()
-    print("Revenez quand vous voulez !")
+    print('"SPACE INVADERS" @by Jordan HERENG | L2 INF0')
 
 if __name__ == "__main__":
     main()
