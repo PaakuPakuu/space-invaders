@@ -31,14 +31,13 @@ SECOND = 2
 THIRD = 3
 
 ASPEED = 0.1 * MULT
-ALSPEED = 2 * MULT
+ALSPEED = 3 * MULT
 
 # Player settings
 PSPEED = 2 * MULT
 PLSPEED = 6 * MULT
 
 # Sprites name
-
 def load_sprites():
     """"""
     
@@ -88,8 +87,9 @@ SPRITES = load_sprites()
 
 # GUI settings
 FONT_SIZE = 15 * MULT
-SCORE_POS1, SCORE_POS2 = (15 * MULT, 5 * MULT), (25 * MULT, 15 * MULT)
+SCOREP1_POS1, SCOREP1_POS2 = (15 * MULT, 5 * MULT), (25 * MULT, 15 * MULT)
 HISCORE_POS1, HISCORE_POS2 = (92 * MULT, 5 * MULT), (102 * MULT, 15 * MULT)
+SCOREP2_POS1, SCOREP2_POS2 = (165 * MULT, 5 * MULT), (175 * MULT, 15 * MULT)
 
 BEGIN_LINE, END_LINE = (0, SHEIGHT - 15 * MULT), (SWIDTH, SHEIGHT - 15 * MULT)
 

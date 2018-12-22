@@ -11,7 +11,7 @@ def main():
     window = pygame.display.set_mode(const.SRECT, pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("SPACE INVADERS")
     
-    scene = GameScene(window)
+    scene = MenuScene(window)
 
     stop = False
     while not stop:

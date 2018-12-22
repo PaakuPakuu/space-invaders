@@ -112,11 +112,12 @@ class Hord:
                 x = alien.place.x
                 del(self.aliens[i])
                 self.nb_aliens -= 1
-                self.allow_shoot(x, time)
-                
-                self.reset_cols()
-                self.reset_rows()
-                self.reset_pos()
+
+                if self.nb_aliens > 0:
+                    self.allow_shoot(x, time)
+                    self.reset_cols()
+                    self.reset_rows()
+                    self.reset_pos()
 
     def update_lasers(self, time):
         """"""

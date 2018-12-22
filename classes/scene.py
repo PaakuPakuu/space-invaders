@@ -2,7 +2,7 @@ import pygame
 import classes.constants as const
 from classes.hord import Hord
 from classes.entities import Player
-from classes.gui import GUI
+from classes.gui import *
 
 class Scene:
     """"""
@@ -12,8 +12,13 @@ class Scene:
 
         self._window = window
         self._running = True
-        self._menu_on_quit = const.MAIN_MENU
+        self.__menu_on_quit = const.QUIT
         self._gui = GUI()
+
+    def set_next_scene(self, name):
+        """"""
+
+        self.__menu_on_quit = name
 
     def on_execute(self):
         """Retourne l'id du menu cible."""
@@ -35,7 +40,7 @@ class Scene:
 
             clock.tick(50)
 
-        return self._menu_on_quit
+        return self.__menu_on_quit
 # End of Scene class
 
 class MenuScene(Scene):
@@ -45,6 +50,47 @@ class MenuScene(Scene):
         """"""
 
         Scene.__init__(self, window)
+
+        # sprites and texts
+        self.__font = pygame.font.Font("resources/fonts/text.ttf", const.FONT_SIZE)
+        self.__color = (255,255,255)
+
+        self.__t_play = self.__font.render("PLAY", False, self.__color)
+
+        logo = pygame.image.load("./resources/images/logo.png")
+        logo.set_colorkey((255,0,255))
+        self.__logo = pygame.transform.scale(logo, (100 * const.MULT, 50 * const.MULT))
+
+        self.__t_sat = self.__font.render("*SCORE ADVANCE TABLE*", False, self.__color)
+
+    def on_event(self, event):
+        """"""
+
+        if event.type == pygame.QUIT:
+            self.set_next_scene(const.QUIT)
+            self._running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self._running = False
+            elif event.key == pygame.K_RETURN:
+                self.set_next_scene(const.GAME_MENU)
+                self._running = False
+
+    def on_update(self):
+        """"""
+
+        # faire apparaître petit à petit le texte
+        pass
+
+    def on_render(self):
+        """"""
+
+        window = self._window
+
+        self._gui.on_render(window)
+        window.blit(self.__logo, (on_middle(self.__logo), 70 * const.MULT))
+        window.blit(self.__t_play, (on_middle(self.__t_play), 50 * const.MULT))
+
 # End of MenuScene class
 
 class GameScene(Scene):
@@ -55,7 +101,6 @@ class GameScene(Scene):
 
         Scene.__init__(self, window)
 
-        self._on_menu_quit = const.MAIN_MENU
         self.__player = Player()
         self.__hord = Hord(self.__player)
 
@@ -64,6 +109,7 @@ class GameScene(Scene):
     def on_event(self, event):
         """"""
         if event.type == pygame.QUIT:
+            self.set_next_scene(const.QUIT)
             self._running = False
         else:
             self.__player.on_event(event)
@@ -84,11 +130,11 @@ class GameScene(Scene):
 
         self.__player.on_update(time, self._gui)
 
-        if not self.__player.alive:
+        if not self.__player.alive or self.__hord.nb_aliens == 0:
             self._running = False
-        elif self.__hord.nb_aliens == 0:
-            self.__won = True
-            self._running = False
+            if self.__player.alive:
+                self.__won = True
+            self.set_next_scene(const.MAIN_MENU)
 
     def on_render(self):
         """"""
@@ -96,6 +142,7 @@ class GameScene(Scene):
         window = self._window
 
         self._gui.on_render(window)
+        pygame.draw.line(window, (0,255,0), const.BEGIN_LINE, const.END_LINE, const.MULT)
 
         self.__hord.on_render(window)
 
