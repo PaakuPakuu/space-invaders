@@ -62,6 +62,10 @@ class MenuScene(Scene):
         self.__logo = pygame.transform.scale(logo, (100 * const.MULT, 50 * const.MULT))
 
         self.__t_sat = self.__font.render("*SCORE ADVANCE TABLE*", False, self.__color)
+        self.__t_mystery = self.__font.render("=? MYSTERY", False, (255,0,0))
+        self.__t_30 = self.__font.render("=30 POINTS", False, self.__color)
+        self.__t_20 = self.__font.render("=20 POINTS", False, self.__color)
+        self.__t_10 = self.__font.render("=10 POINTS", False, self.__color)
 
     def on_event(self, event):
         """"""
@@ -89,7 +93,19 @@ class MenuScene(Scene):
 
         self._gui.on_render(window)
         window.blit(self.__logo, (on_middle(self.__logo), 70 * const.MULT))
+
         window.blit(self.__t_play, (on_middle(self.__t_play), 50 * const.MULT))
+        window.blit(self.__t_sat, (on_middle(self.__t_sat),  130 * const.MULT))
+
+        window.blit(self.__t_mystery, (on_middle(self.__t_mystery) + 10,  145 * const.MULT))
+        window.blit(self.__t_30, (on_middle(self.__t_30) + 10,  160 * const.MULT))
+        window.blit(self.__t_20, (on_middle(self.__t_20) + 10,  175 * const.MULT))
+        window.blit(self.__t_10, (on_middle(self.__t_10) + 10,  190 * const.MULT))
+
+        sprites = [const.SPRITES["alien3"][0], const.SPRITES["alien2"][0], const.SPRITES["alien1"][0]]
+        window.blit(sprites[0], (on_middle(self.__t_30) - 7 * const.MULT, 162 * const.MULT))
+        window.blit(sprites[1], (on_middle(self.__t_20) - 10 * const.MULT, 177 * const.MULT))
+        window.blit(sprites[2], (on_middle(self.__t_10) - 11 * const.MULT, 192 * const.MULT))
 
 # End of MenuScene class
 

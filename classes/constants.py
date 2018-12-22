@@ -4,7 +4,6 @@ MULT = 3
 
 # Screen
 SWIDTH, SHEIGHT = 224 * MULT, 256 * MULT
-SRECT = (SWIDTH, SHEIGHT)
 OFFSET_X, OFFSET_Y = 5 * MULT, 35 * MULT
 
 # Menus ID
@@ -31,7 +30,7 @@ SECOND = 2
 THIRD = 3
 
 ASPEED = 0.1 * MULT
-ALSPEED = 3 * MULT
+ALSPEED = 2.5 * MULT
 
 # Player settings
 PSPEED = 2 * MULT

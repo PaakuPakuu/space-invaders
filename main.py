@@ -8,7 +8,7 @@ def main():
     """"""
     
     pygame.init()
-    window = pygame.display.set_mode(const.SRECT, pygame.HWSURFACE | pygame.DOUBLEBUF)
+    window = pygame.display.set_mode((const.SWIDTH, const.SHEIGHT), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("SPACE INVADERS")
     
     scene = MenuScene(window)
@@ -27,7 +27,7 @@ def main():
             stop = True
 
     pygame.quit()
-
+    print("Revenez quand vous voulez !")
 
 if __name__ == "__main__":
     main()
