@@ -92,5 +92,7 @@ class LaserAlien(Laser):
             player.take_damage()
             player.dead = True
             player.dead_time = time + 1500
+            player.laser = None
+
             return PLAYER
         return NOBODY
