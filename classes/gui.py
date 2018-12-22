@@ -12,22 +12,21 @@ class GUI:
         self.credits = 0
         
         # sprites and texts
-        self.__font = pygame.font.Font("resources/fonts/text.ttf", const.FONT_SIZE)
-        self.__color = (255,255,255)
+        self.font = pygame.font.Font("./resources/fonts/text.ttf", 15 * const.MULT)
 
-        self.__t_score1_p1 = self.__font.render("SCORE<1>", False, self.__color)
-        self.__t_score2_p1 = self.__font.render("0000", False, self.__color)
+        self.__t_score1_p1 = self.font.render("SCORE<1>", False, const.COLOR)
+        self.__t_score2_p1 = self.font.render("0000", False, const.COLOR)
 
-        self.__t_hiscore1 = self.__font.render("HI-SCORE", False, self.__color)
-        self.__t_hiscore2 = self.__font.render("0000", False, self.__color)
+        self.__t_hiscore1 = self.font.render("HI-SCORE", False, const.COLOR)
+        self.__t_hiscore2 = self.font.render("0000", False, const.COLOR)
 
-        self.__t_score1_p2 = self.__font.render("SCORE<2>", False, self.__color)
-        self.__t_score2_p2 = self.__font.render("0000", False, self.__color)
+        self.__t_score1_p2 = self.font.render("SCORE<2>", False, const.COLOR)
+        self.__t_score2_p2 = self.font.render("0000", False, const.COLOR)
 
-        self.__t_lifes = self.__font.render("0", False, self.__color)
+        self.__t_lifes = self.font.render("0", False, const.COLOR)
         self.__life_sprite = const.SPRITES["player"][0]
 
-        self.__t_credits = self.__font.render("CREDIT 00", False, self.__color)
+        self.__t_credits = self.font.render("CREDIT 00", False, const.COLOR)
 
     def convert_score(self, n, t):
         """"""
@@ -37,11 +36,11 @@ class GUI:
     def on_update(self):
         """"""
 
-        self.__t_score2_p1 = self.__font.render(self.convert_score(self.score, 4), False, self.__color)
-        self.__t_hiscore2 = self.__font.render(self.convert_score(self.hiscore, 4), False, self.__color)
+        self.__t_score2_p1 = self.font.render(self.convert_score(self.score, 4), False, const.COLOR)
+        self.__t_hiscore2 = self.font.render(self.convert_score(self.hiscore, 4), False, const.COLOR)
 
-        self.__t_lifes = self.__font.render(str(self.lifes), False, self.__color)
-        self.__t_credits = self.__font.render("CREDIT " + self.convert_score(self.credits, 2), False, self.__color)
+        self.__t_lifes = self.font.render(str(self.lifes), False, const.COLOR)
+        self.__t_credits = self.font.render("CREDIT " + self.convert_score(self.credits, 2), False, const.COLOR)
 
     def on_render(self, surf):
         """"""

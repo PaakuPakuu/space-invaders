@@ -52,20 +52,17 @@ class MenuScene(Scene):
         Scene.__init__(self, window)
 
         # sprites and texts
-        self.__font = pygame.font.Font("resources/fonts/text.ttf", const.FONT_SIZE)
-        self.__color = (255,255,255)
-
-        self.__t_play = self.__font.render("PLAY", False, self.__color)
+        self.__t_play = self._gui.font.render("PLAY", False, const.COLOR)
 
         logo = pygame.image.load("./resources/images/logo.png")
         logo.set_colorkey((255,0,255))
         self.__logo = pygame.transform.scale(logo, (100 * const.MULT, 50 * const.MULT))
 
-        self.__t_sat = self.__font.render("*SCORE ADVANCE TABLE*", False, self.__color)
-        self.__t_mystery = self.__font.render("=? MYSTERY", False, (255,0,0))
-        self.__t_30 = self.__font.render("=30 POINTS", False, self.__color)
-        self.__t_20 = self.__font.render("=20 POINTS", False, self.__color)
-        self.__t_10 = self.__font.render("=10 POINTS", False, self.__color)
+        self.__t_sat = self._gui.font.render("*SCORE ADVANCE TABLE*", False, const.COLOR)
+        self.__t_mystery = self._gui.font.render("=? MYSTERY", False, (255,0,0))
+        self.__t_30 = self._gui.font.render("=30 POINTS", False, const.COLOR)
+        self.__t_20 = self._gui.font.render("=20 POINTS", False, const.COLOR)
+        self.__t_10 = self._gui.font.render("=10 POINTS", False, const.COLOR)
 
     def on_event(self, event):
         """"""
@@ -120,22 +117,37 @@ class GameScene(Scene):
         self.__player = Player()
         self.__hord = Hord(self.__player)
 
+        self.__pause = False
+        self.__on_pause_time = 0
+        self.__pause_time = 0
         self.__won = False
+
+        # texts
+        self.__t_pause = self._gui.font.render("PAUSE", False, const.COLOR)
+        self.__t_resume = self._gui.font.render("[ESC] : RESUME", False, const.COLOR)
+        self.__t_quit = self._gui.font.render("[RETURN] : QUIT", False, const.COLOR)
 
     def on_event(self, event):
         """"""
+
         if event.type == pygame.QUIT:
             self.set_next_scene(const.QUIT)
             self._running = False
-        else:
-            self.__player.on_event(event)
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.__pause = not self.__pause
+                self.__on_pause_time = pygame.time.get_ticks() - self.__on_pause_time
 
-    def on_update(self):
+            if self.__pause and event.key == pygame.K_RETURN:
+                self.set_next_scene(const.MAIN_MENU)
+                self._running = False
+
+        self.__player.on_event(event)
+
+    def update_game(self, time):
         """"""
 
         self._gui.on_update()
-        
-        time = pygame.time.get_ticks()
 
         self.__hord.on_update(time, self._gui)
 
@@ -151,6 +163,29 @@ class GameScene(Scene):
             if self.__player.alive:
                 self.__won = True
             self.set_next_scene(const.MAIN_MENU)
+
+    def on_update(self):
+        """"""
+
+        time = pygame.time.get_ticks()
+        if not self.__pause:
+            self.update_game(time - self.__pause_time)
+        else:
+            self.__pause_time = time - self.__on_pause_time
+        
+    def render_pause(self):
+        """"""
+
+        window = self._window
+
+        transp = pygame.Surface((const.SRECT))
+        transp.set_alpha(150)
+        transp.fill((0,0,0))
+        window.blit(transp, (0,0))
+
+        window.blit(self.__t_pause, (on_middle(self.__t_pause), 100 * const.MULT))
+        window.blit(self.__t_resume, (on_middle(self.__t_resume), 140 * const.MULT))
+        window.blit(self.__t_quit, (on_middle(self.__t_quit), 155 * const.MULT))
 
     def on_render(self):
         """"""
@@ -168,6 +203,9 @@ class GameScene(Scene):
             self.__player.explosion.on_render(window)
 
         self.__player.on_render(window)
+
+        if self.__pause:
+            self.render_pause()
 
 # End of GameScene class
 
