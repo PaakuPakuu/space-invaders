@@ -135,7 +135,7 @@ class Player(LivingEntity):
         """"""
 
         pos = Point((const.SWIDTH - const.EWIDTH) // 2, const.SHEIGHT - const.EHEIGHT - const.OFFSET_Y)
-        LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 20)
+        LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 3)
         self.__currentSprite = 0
 
         self.__left_velocity = 0
