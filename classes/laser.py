@@ -89,10 +89,7 @@ class LaserAlien(Laser):
         """"""
 
         if not player.dead and player.rect.intersects(self.rect):
-            player.take_damage()
-            player.dead = True
-            player.dead_time = time + 1500
-            player.laser = None
+            player.take_damage(time)
 
             return PLAYER
         return NOBODY

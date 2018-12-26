@@ -46,14 +46,14 @@ class LivingEntity(Entity):
         """"""
 
         Entity.__init__(self, pos, sprites)
-        self.__speed = speed
+        self._speed = speed
         self.lifes = lifes
         self.alive = True
 
     def lateral_movement(self, direct):
         """"""
 
-        self.pos.x += self.__speed * direct
+        self.pos.x += self._speed * direct
 
     def take_damage(self, val = 1):
         """"""
@@ -108,6 +108,11 @@ class Alien(LivingEntity):
         pos = Point(self.pos.x + self.rect.tx() // 2, self.pos.y + self.rect.ty())
         return LaserAlien(pos)
 
+    def add_speed(self, val):
+        """"""
+
+        self._speed += val
+
     def on_update(self, time, lasers, explosions):
         """"""
 
@@ -130,7 +135,7 @@ class Player(LivingEntity):
         """"""
 
         pos = Point((const.SWIDTH - const.EWIDTH) // 2, const.SHEIGHT - const.EHEIGHT - const.OFFSET_Y)
-        LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 3)
+        LivingEntity.__init__(self, pos, const.SPRITES["player"], const.PSPEED, 20)
         self.__currentSprite = 0
 
         self.__left_velocity = 0
@@ -173,6 +178,18 @@ class Player(LivingEntity):
         pos = Point(self.pos.x + const.EWIDTH // 2, self.pos.y)
         self.laser = LaserPlayer(pos)
 
+    def take_damage(self, time, val = 1):
+        """"""
+
+        self.lifes -= val
+        if self.lifes <= 0:
+            self.alive = False
+            self.lifes = 0
+
+        self.dead = True
+        self.dead_time = time + 1500
+        self.laser = None
+
     def on_event(self, event):
         """"""
 
@@ -210,7 +227,8 @@ class Player(LivingEntity):
             if self.explosion != None and self.explosion.destroy:
                 self.explosion = None
 
-            gui.lifes = self.lifes
         else:
             self.dead_animation(time)
             self.__left_velocity = self.__right_velocity = 0
+
+        gui.lifes = self.lifes

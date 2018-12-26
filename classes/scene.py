@@ -151,7 +151,7 @@ class GameScene(Scene):
 
         self._gui.on_update()
 
-        self.__hord.on_update(time, self._gui, self.__player.dead)
+        self.__hord.on_update(time, self._gui)
 
         if self.__player.laser != None:
             self.__player.laser.on_update(self.__hord)

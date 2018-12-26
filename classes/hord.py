@@ -12,7 +12,6 @@ class Hord:
 
         self.aliens = init_aliens(rows, cols)
         self.__pos = self.aliens[0].pos
-        self.__down = 0
         self.nb_aliens = rows * cols
 
         self.__min_col, self.__max_col = 0, cols - 1
@@ -24,6 +23,9 @@ class Hord:
         self.explosions = []
 
         self.__player = player
+
+        self.__down = 0
+        self.__down_begin, self.__down_end = 0, 15
     
     def on_border_left(self):
         """"""
@@ -93,31 +95,42 @@ class Hord:
     def update_aliens(self, time, gui):
         """"""
 
-        i = 0
-        while i < self.nb_aliens:
-            alien = self.aliens[i]
+        if self.aliens[-1].pos.y < const.SHEIGHT - const.OFFSET_Y - 2 *const.EHEIGHT:
+            border = self.on_border_left() or self.on_border_right()
+            if border:
+                self.__down += 1
 
-            if alien.alive:
-                alien.on_update(time, self.lasers, self.explosions)
+            i = 0
+            while i < self.nb_aliens:
+                alien = self.aliens[i]
 
-                if self.on_border_left() or self.on_border_right():
-                    alien.change_dir()
-                    alien.move_down()
-                    self.__down += 1
+                if alien.alive:
+                    if border:
+                        alien.change_dir()
+                        alien.move_down()
 
-                i += 1
-            else:
-                gui.score += alien.value
+                        if self.__down == 6:
+                            alien.add_speed(0.25 * const.MULT)
+                        elif self.__down == 18:
+                            alien.add_speed(0.33 * const.MULT)
+                        elif self.__down == 30:
+                            alien.add_speed(const.MULT)
 
-                x = alien.place.x
-                del(self.aliens[i])
-                self.nb_aliens -= 1
+                    alien.on_update(time, self.lasers, self.explosions)
+                    i += 1
+                else:
+                    gui.score += alien.value
 
-                if self.nb_aliens > 0:
-                    self.allow_shoot(x, time)
-                    self.reset_cols()
-                    self.reset_rows()
-                    self.reset_pos()
+                    del(self.aliens[i])
+                    self.nb_aliens -= 1
+
+                    if self.nb_aliens > 0:
+                        self.allow_shoot(alien.place.x, time)
+                        self.reset_cols()
+                        self.reset_rows()
+                        self.reset_pos()
+        elif not self.__player.dead:
+            self.__player.take_damage(time, self.__player.lifes)
 
     def update_lasers(self, time):
         """"""
@@ -126,7 +139,6 @@ class Hord:
         while i < len(self.lasers):
             laser = self.lasers[i]
             if laser.has_touched != NOBODY:
-                # if laser.has_touched != LASER:
                 self.explosions.append(Explosion(laser.pos, laser.has_touched, time))
                 del(self.lasers[i])
             else:
@@ -145,10 +157,10 @@ class Hord:
                 e.on_update(time)
                 i += 1
 
-    def on_update(self, time, gui, dead):
+    def on_update(self, time, gui):
         """"""
 
-        if not dead:
+        if not self.__player.dead:
             self.update_aliens(time, gui)
 
         self.update_lasers(time)
